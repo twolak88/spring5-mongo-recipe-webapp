@@ -54,7 +54,7 @@ public class DataLoader implements ApplicationListener<ContextRefreshedEvent> {
 		}
 		Set<Recipe> recipes = getRecipes();
 		recipeRepository.saveAll(recipes);
-//		syncRecipeCategories(recipes);
+		syncRecipeCategories(recipes);
 	}
 	
 	private void syncRecipeCategories(Set<Recipe> recipes) {

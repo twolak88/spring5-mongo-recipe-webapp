@@ -25,6 +25,6 @@ public class Category {
 	private String id;
 	private String description;
 	
-	@DBRef(lazy = false)
+	@DBRef(lazy = true)
 	private Set<Recipe> recipes = new HashSet<>();
 }

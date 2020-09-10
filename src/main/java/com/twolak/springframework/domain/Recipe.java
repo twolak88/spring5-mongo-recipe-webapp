@@ -37,7 +37,7 @@ public class Recipe {
     
     private Set<Ingredient> ingredients = new HashSet<>();
     
-    @DBRef(lazy = false)
+    @DBRef(lazy = true)
     private Set<Category> categories = new HashSet<>();
     
     public void setNotes(Notes notes) {
