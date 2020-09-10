@@ -10,7 +10,7 @@ import com.twolak.springframework.domain.Recipe;
  *
  */
 public interface RecipeService {
-	Set<Recipe> findAll();
+	Set<RecipeCommand> findAll();
 	RecipeCommand findById(String recipeId);
 	RecipeCommand save(RecipeCommand recipeCommand);
 	void deleteById(String id);

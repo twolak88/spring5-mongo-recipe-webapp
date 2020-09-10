@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
 
-import com.twolak.springframework.domain.Recipe;
+import com.twolak.springframework.commands.RecipeCommand;
 import com.twolak.springframework.services.RecipeService;
 
 /**
@@ -69,16 +69,16 @@ public class IndexControllerTest {
 	public void testGetIndexPage() throws Exception {
 		
 		//given
-		Set<Recipe> recipes = new HashSet<>();
+		Set<RecipeCommand> recipes = new HashSet<>();
 		for(int i = 0; i < RECIPES_IN_SET; i++) {
-			Recipe recipe = new Recipe();
+			RecipeCommand recipe = new RecipeCommand();
 			recipe.setId("a" + i);
 			recipes.add(recipe);
 		}
 		
 		when(recipeService.findAll()).thenReturn(recipes);
 		
-		ArgumentCaptor<Set<Recipe>> argumentCaptor = ArgumentCaptor.forClass(Set.class); 
+		ArgumentCaptor<Set<RecipeCommand>> argumentCaptor = ArgumentCaptor.forClass(Set.class); 
 		
 		//when
 		String viewName = indexController.getIndexPage(model);
@@ -88,7 +88,7 @@ public class IndexControllerTest {
 		verify(model, times(METHODS_CALL_TIMES)).addAttribute(eq("recipes"), argumentCaptor.capture());
 		verify(recipeService, times(METHODS_CALL_TIMES)).findAll();
 		
-		Set<Recipe> setInController = argumentCaptor.getValue();
+		Set<RecipeCommand> setInController = argumentCaptor.getValue();
 		assertEquals(RECIPES_IN_SET, setInController.size());
 	}
 }

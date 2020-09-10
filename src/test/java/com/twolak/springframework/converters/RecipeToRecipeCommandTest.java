@@ -44,7 +44,7 @@ class RecipeToRecipeCommandTest {
 	void setUp() throws Exception {
 		this.recipeToRecipeCommand = new RecipeToRecipeCommand(
 				new IngredientToIngredientCommand(new UnitOfMeasureToUnitOfMeasureCommand()),
-				new CategoryToCategoryCommand());
+				new CategoryToCategoryCommand(), new NotesToNotesCommand());
 	}
 
 	@Test

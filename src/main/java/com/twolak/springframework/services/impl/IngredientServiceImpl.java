@@ -44,14 +44,16 @@ public class IngredientServiceImpl implements IngredientService {
 	public IngredientCommand findByRecipeIdAndIngredientId(String recipeId, String ingredientId) {
 		Recipe recipe = getRecipeById(recipeId);
 		
-		Optional<IngredientCommand> ingredientOptional = recipe.getIngredients().stream().filter(ingredient -> ingredient.getId().equals(ingredientId))
+		Optional<IngredientCommand> ingredientCommandOptional = recipe.getIngredients().stream().filter(ingredient -> ingredient.getId().equals(ingredientId))
 				.findFirst().map(ingredientToIngredientCommand::convert);
-		if (!ingredientOptional.isPresent()) {
+		if (!ingredientCommandOptional.isPresent()) {
 			String msg = "Ingredient for id: " + ingredientId + " not found!";
 			log.debug(msg);
 			throw new NotFoundException(msg);
 		}
-		return ingredientOptional.get(); 
+        IngredientCommand ingredientCommand = ingredientCommandOptional.get();
+        ingredientCommand.setRecipeId(recipeId);
+		return ingredientCommand; 
 	}
 
 	@Override
@@ -74,7 +76,6 @@ public class IngredientServiceImpl implements IngredientService {
 
 		Optional<Ingredient> savedingredientOptional = savedRecipe.getIngredients().stream()
 				.filter(ingredient -> ingredient.getId().equals(ingredientCommand.getId())).findFirst();
-		Ingredient savedIngredient;
 		if (!savedingredientOptional.isPresent()) {
 			
 			savedingredientOptional = savedRecipe.getIngredients().stream()
@@ -89,8 +90,9 @@ public class IngredientServiceImpl implements IngredientService {
 				throw new NotFoundException(msg);
 			}
 		}
-		savedIngredient = savedingredientOptional.get();
-		return this.ingredientToIngredientCommand.convert(savedIngredient);
+		IngredientCommand ingredientCommandSaved = ingredientToIngredientCommand.convert(savedingredientOptional.get());
+        ingredientCommandSaved.setRecipeId(recipe.getId());
+		return ingredientCommandSaved;
 	}
 
 	private Recipe getRecipeById(String recipeId) {
@@ -123,7 +125,6 @@ public class IngredientServiceImpl implements IngredientService {
 			throw new NotFoundException(msg);
 		}
 		Ingredient ingredientToDelete = ingredientToDeleteOptional.get();
-		ingredientToDelete.setRecipe(null);
 		recipe.getIngredients().remove(ingredientToDelete);
 		this.recipeRepository.save(recipe);
 	}

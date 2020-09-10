@@ -22,6 +22,7 @@ import org.mockito.MockitoAnnotations;
 import com.twolak.springframework.commands.RecipeCommand;
 import com.twolak.springframework.converters.CategoryToCategoryCommand;
 import com.twolak.springframework.converters.IngredientToIngredientCommand;
+import com.twolak.springframework.converters.NotesToNotesCommand;
 import com.twolak.springframework.converters.RecipeToRecipeCommand;
 import com.twolak.springframework.converters.UnitOfMeasureToUnitOfMeasureCommand;
 import com.twolak.springframework.domain.Recipe;
@@ -48,7 +49,7 @@ public class RecipeServiceImplTest {
 		MockitoAnnotations.initMocks(this);
 		recipeToRecipeCommand = new RecipeToRecipeCommand(
 				new IngredientToIngredientCommand(new UnitOfMeasureToUnitOfMeasureCommand()),
-				new CategoryToCategoryCommand());
+				new CategoryToCategoryCommand(), new NotesToNotesCommand());
 		recipeService = new RecipeServiceImpl(recipeRepository, recipeToRecipeCommand, null);
 
 	}
@@ -99,7 +100,7 @@ public class RecipeServiceImplTest {
 
 		when(this.recipeRepository.findAll()).thenReturn(recipesData);
 
-		Set<Recipe> recipes = recipeService.findAll();
+		Set<RecipeCommand> recipes = recipeService.findAll();
 
 		assertEquals(recipes.size(), 1);
 		verify(this.recipeRepository, times(1)).findAll();

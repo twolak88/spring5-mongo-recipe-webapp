@@ -6,6 +6,10 @@ package com.twolak.springframework.domain;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +19,10 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@Document
 public class Recipe {
+	
+	@Id
     private String id;
     private String description;
     private Integer prepTime;
@@ -27,18 +34,21 @@ public class Recipe {
     private Difficulty difficulty;
     private Byte[] image;
     private Notes notes;
+    
     private Set<Ingredient> ingredients = new HashSet<>();
+    
+    @DBRef(lazy = false)
     private Set<Category> categories = new HashSet<>();
     
     public void setNotes(Notes notes) {
         this.notes = notes;
-        if (notes != null) {
-        	notes.setRecipe(this);
-        }
+//        if (notes != null) {
+//        	notes.setRecipe(this);
+//        }
     }
 	
 	public Recipe addIngredient(Ingredient ingredient) {
-		ingredient.setRecipe(this);
+//		ingredient.setRecipe(this);
 		this.ingredients.add(ingredient);
 		return this;
 	}

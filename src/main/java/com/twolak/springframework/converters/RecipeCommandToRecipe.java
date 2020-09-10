@@ -20,11 +20,13 @@ public class RecipeCommandToRecipe implements Converter<RecipeCommand, Recipe> {
 	
 	private final IngredientCommandToIngredient ingredientCommandToIngredient;
 	private final CategoryCommandToCategory categoryCommandToCategory;
+	private final NotesCommandToNotes notesCommandToNotes;
 
 	public RecipeCommandToRecipe(IngredientCommandToIngredient ingredientCommandToIngredient,
-			CategoryCommandToCategory categoryCommandToCategory) {
+			CategoryCommandToCategory categoryCommandToCategory, NotesCommandToNotes notesCommandToNotes) {
 		this.ingredientCommandToIngredient = ingredientCommandToIngredient;
 		this.categoryCommandToCategory = categoryCommandToCategory;
+		this.notesCommandToNotes = notesCommandToNotes;
 	}
 
 	@Synchronized
@@ -45,11 +47,15 @@ public class RecipeCommandToRecipe implements Converter<RecipeCommand, Recipe> {
 		recipe.setDirections(source.getDirections());
 		recipe.setDifficulty(source.getDifficulty());
 		recipe.setImage(source.getImage());
-		recipe.setNotes((new NotesCommandToNotes()).convert(source.getNotes()));
-		recipe.setIngredients(source.getIngredients().stream().map(this.ingredientCommandToIngredient::convert)
+		recipe.setNotes(this.notesCommandToNotes.convert(source.getNotes()));
+		if (source.getIngredients() != null && source.getIngredients().size() > 0){
+			recipe.setIngredients(source.getIngredients().stream().map(this.ingredientCommandToIngredient::convert)
 				.collect(Collectors.toSet()));
-		recipe.setCategories(source.getCategories().stream().map(this.categoryCommandToCategory::convert)
+		}
+		if (source.getCategories() != null && source.getCategories().size() > 0){
+			recipe.setCategories(source.getCategories().stream().map(this.categoryCommandToCategory::convert)
 				.collect(Collectors.toSet()));
+		}
 		return recipe;
 	}
 

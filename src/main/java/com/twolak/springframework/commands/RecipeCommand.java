@@ -3,9 +3,8 @@
  */
 package com.twolak.springframework.commands;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import java.util.ArrayList;
+import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -59,6 +58,6 @@ public class RecipeCommand {
 	@Valid
 	private NotesCommand notes;
     private Byte[] image;
-	private Set<IngredientCommand> ingredients = new HashSet<>();
-	private Set<CategoryCommand> categories = new HashSet<>();
+	private List<IngredientCommand> ingredients = new ArrayList<>();
+	private List<CategoryCommand> categories = new ArrayList<>();
 }

@@ -2,8 +2,11 @@ package com.twolak.springframework.bootstrap;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
@@ -43,12 +46,30 @@ public class DataLoader implements ApplicationListener<ContextRefreshedEvent> {
 	@Transactional
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		log.debug("Loading bootstrap data");
-		recipeRepository.saveAll(getRecipes());
+		if (this.categoryRepository.count() == 0) {
+			loadCategories();
+		}
+		if (this.unitOfMeasureRepository.count() == 0) {
+			LoadUnitOfMeasures();
+		}
+		Set<Recipe> recipes = getRecipes();
+		recipeRepository.saveAll(recipes);
+//		syncRecipeCategories(recipes);
+	}
+	
+	private void syncRecipeCategories(Set<Recipe> recipes) {
+		Set<Category> categories = new HashSet<>();
+		recipes.forEach(recipe -> recipe.getCategories().forEach(category -> {
+			category.getRecipes().add(recipe);
+			categories.add(category);
+			}));
+		this.categoryRepository.saveAll(categories);
+		
 	}
 
-	private List<Recipe> getRecipes() {
+	private Set<Recipe> getRecipes() {
 		
-		List<Recipe> recipes = new ArrayList<>();
+		Set<Recipe> recipes = new HashSet<>();
 		
 		Optional<UnitOfMeasure> teaspoonOpt = unitOfMeasureRepository.findByDescription("Teaspoon");
 		
@@ -240,5 +261,36 @@ public class DataLoader implements ApplicationListener<ContextRefreshedEvent> {
 		Notes notes = new Notes();
 		notes.setNote(note);
 		return notes;
+	}
+	
+	private void loadCategories() {
+		saveCategory("American");
+		saveCategory("Italian");
+		saveCategory("Mexican");
+		saveCategory("Fast Food");
+	}
+	
+	private void saveCategory(String category) {
+		Category cat = new Category();
+		cat.setDescription(category);
+		this.categoryRepository.save(cat);
+	}
+	
+	private void LoadUnitOfMeasures() {
+		saveUnitOfMeasure("Teaspoon");
+		saveUnitOfMeasure("Tablespoon");
+		saveUnitOfMeasure("Cup");
+		saveUnitOfMeasure("Pinch");
+		saveUnitOfMeasure("Ounce");
+		saveUnitOfMeasure("Dash");
+		saveUnitOfMeasure("Pound");
+		saveUnitOfMeasure("Piece");
+		saveUnitOfMeasure("Quart");
+	}
+	
+	private void saveUnitOfMeasure(String description) {
+		UnitOfMeasure unitOfMeasure = new UnitOfMeasure();
+		unitOfMeasure.setDescription(description);
+		this.unitOfMeasureRepository.save(unitOfMeasure);
 	}
 }

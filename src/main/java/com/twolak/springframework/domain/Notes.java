@@ -3,6 +3,8 @@
  */
 package com.twolak.springframework.domain;
 
+import org.springframework.data.annotation.Id;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,10 +15,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@EqualsAndHashCode
 public class Notes {
+	
+	@Id
 	private String id;
-	@EqualsAndHashCode.Exclude
-	private Recipe recipe;
 	private String note;
 }

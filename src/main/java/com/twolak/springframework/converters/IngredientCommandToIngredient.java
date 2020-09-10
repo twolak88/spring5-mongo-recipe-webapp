@@ -25,7 +25,7 @@ public class IngredientCommandToIngredient implements Converter<IngredientComman
 	public IngredientCommandToIngredient(UnitOfMeasureCommandToUnitOfMeasure unitOfMeasureCommandToUnitOfMeasure) {
 		this.unitOfMeasureCommandToUnitOfMeasure = unitOfMeasureCommandToUnitOfMeasure;
 	}
-
+	
 	@Synchronized
 	@Nullable
 	@Override
@@ -34,11 +34,12 @@ public class IngredientCommandToIngredient implements Converter<IngredientComman
 			return null;
 		}
 		final Ingredient ingredient = new Ingredient();
-		ingredient.setId(source.getId());
+		if (source.getId() == null) {
+			ingredient.setId(source.getId());
+		}
 		if(source.getRecipeId() != null) {
 			Recipe recipe = new Recipe();
 			recipe.setId(source.getRecipeId());
-			ingredient.setRecipe(recipe);
 			recipe.addIngredient(ingredient);
 		}
 		ingredient.setAmount(source.getAmount());

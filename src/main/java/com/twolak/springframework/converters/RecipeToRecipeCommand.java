@@ -3,6 +3,7 @@
  */
 package com.twolak.springframework.converters;
 
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import org.springframework.core.convert.converter.Converter;
@@ -22,12 +23,14 @@ import lombok.Synchronized;
 public class RecipeToRecipeCommand implements Converter<Recipe, RecipeCommand> {
 	
 	private final IngredientToIngredientCommand ingredientToIngredientCommand;
-	private final CategoryToCategoryCommand categoryToCategoryCommand; 
+	private final CategoryToCategoryCommand categoryToCategoryCommand;
+	private final NotesToNotesCommand notesToNotesCommand;
 
 	public RecipeToRecipeCommand(IngredientToIngredientCommand ingredientToIngredientCommand,
-			com.twolak.springframework.converters.CategoryToCategoryCommand categoryToCategoryCommand) {
+			CategoryToCategoryCommand categoryToCategoryCommand, NotesToNotesCommand notesToNotesCommand) {
 		this.ingredientToIngredientCommand = ingredientToIngredientCommand;
 		this.categoryToCategoryCommand = categoryToCategoryCommand;
+		this.notesToNotesCommand = notesToNotesCommand;
 	}
 
 	@Synchronized
@@ -48,11 +51,13 @@ public class RecipeToRecipeCommand implements Converter<Recipe, RecipeCommand> {
 		recipeCommand.setDirections(source.getDirections());
 		recipeCommand.setDifficulty(source.getDifficulty());
 		recipeCommand.setImage(source.getImage());
-		recipeCommand.setNotes((new NotesToNotesCommand()).convert(source.getNotes()));
-		recipeCommand.setIngredients(source.getIngredients().stream().map(this.ingredientToIngredientCommand::convert)
-				.collect(Collectors.toSet()));
-		recipeCommand.setCategories(source.getCategories().stream().map(this.categoryToCategoryCommand::convert)
-				.collect(Collectors.toSet()));
+		recipeCommand.setNotes(this.notesToNotesCommand.convert(source.getNotes()));
+		if (source.getIngredients() != null && source.getIngredients().size() > 0){
+			source.getIngredients().forEach(ingredient -> recipeCommand.getIngredients().add(ingredientToIngredientCommand.convert(ingredient)));
+		}
+		if (source.getCategories() != null && source.getCategories().size() > 0){
+			source.getCategories().forEach(category -> recipeCommand.getCategories().add(categoryToCategoryCommand.convert(category)));
+		}
 		return recipeCommand;
 	}
 }
