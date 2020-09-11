@@ -30,7 +30,6 @@ dependencies {
 	implementation 'org.hibernate.validator:hibernate-validator'
 	implementation 'org.apache.commons:commons-lang3'
 	implementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
-	implementation group: 'cz.jirutka.spring', name:'embedmongo-spring'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	implementation 'org.webjars:bootstrap:4.5.2'
