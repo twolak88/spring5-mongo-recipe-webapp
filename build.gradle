@@ -55,10 +55,3 @@ jacocoTestReport {
         html.enabled false
     }
 }
-
-println("distsDirName = " + project.distsDirName)
-println("distsDir = " + project.distsDir.toString())
-
-jar {
-    println("jar.destinationDir = " + destinationDir)
-}
